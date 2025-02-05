@@ -1,13 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+from llm_routing import *
+from settings import *
 
 app = FastAPI()
 
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with specific origins
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -18,8 +20,9 @@ async def root():
     return {"message": "Welcome to Bitnote API"}
 
 @app.get("/response_router")
-async def response_router():
-    return {"status": "healthy"}
+async def response_router(role: str, prompt: str):
+    if llm_type == "openai":
+        return openai_response(role, prompt)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
