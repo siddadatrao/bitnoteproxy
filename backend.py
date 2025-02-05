@@ -22,7 +22,8 @@ async def root():
 @app.get("/response_router")
 async def response_router(role: str, prompt: str):
     if llm_type == "openai":
-        return openai_response(role, prompt)
+        response_text = openai_response(role, prompt)
+        return {"response": response_text}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
