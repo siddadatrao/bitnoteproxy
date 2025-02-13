@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from llm_routing import openai_response
 from settings import llm_type
+import asyncio
 
 app = FastAPI()
 
@@ -18,9 +19,15 @@ app.add_middleware(
 async def response_router(role: str, prompt: str):
     try:
         if llm_type == "openai":
-            response_text = openai_response(role, prompt)
+            # Set a timeout for the entire operation
+            response_text = await asyncio.wait_for(
+                openai_response(role, prompt),
+                timeout=25.0
+            )
             return {"response": response_text}
         raise HTTPException(status_code=400, detail="Invalid LLM type")
+    except asyncio.TimeoutError:
+        raise HTTPException(status_code=504, detail="Request timed out")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
