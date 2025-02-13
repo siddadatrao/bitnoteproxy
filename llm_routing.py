@@ -1,19 +1,18 @@
-from openai import OpenAI
+from openai import AsyncOpenAI
 from settings import OPENAI_API_KEY
-import asyncio
 
 async def openai_response(role: str, prompt: str):
     try:
-        client = OpenAI(api_key=OPENAI_API_KEY, timeout=25.0)  # Set timeout to 25 seconds
+        client = AsyncOpenAI(api_key=OPENAI_API_KEY)
         
-        response = client.chat.completions.create(
-            model="gpt-4",
+        response = await client.chat.completions.create(
+            model="gpt-3.5-turbo",  # Using a faster model
             messages=[
                 {"role": "system", "content": role},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=1000,  # Limit response length
-            timeout=25  # Set OpenAI timeout
+            max_tokens=1000,
+            timeout=20
         )
         
         return response.choices[0].message.content

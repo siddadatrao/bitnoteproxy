@@ -19,17 +19,28 @@ app.add_middleware(
 async def response_router(role: str, prompt: str):
     try:
         if llm_type == "openai":
-            # Set a timeout for the entire operation
+            # Create a task with timeout
             response_text = await asyncio.wait_for(
                 openai_response(role, prompt),
-                timeout=25.0
+                timeout=30.0
             )
             return {"response": response_text}
         raise HTTPException(status_code=400, detail="Invalid LLM type")
     except asyncio.TimeoutError:
-        raise HTTPException(status_code=504, detail="Request timed out")
+        raise HTTPException(
+            status_code=504, 
+            detail="Request timed out - please try again with a shorter prompt"
+        )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(
+            status_code=500,
+            detail=f"An error occurred: {str(e)}"
+        )
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=8000,
+        timeout_keep_alive=30
+    )

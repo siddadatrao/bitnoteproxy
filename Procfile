@@ -1,1 +1,1 @@
-web: gunicorn -w 2 -k uvicorn.workers.UvicornWorker --timeout 30 --keep-alive 2 backend:app 
+web: gunicorn -w 2 -k uvicorn.workers.UvicornWorker --timeout 60 --graceful-timeout 30 --keep-alive 5 --max-requests 1000 backend:app 
