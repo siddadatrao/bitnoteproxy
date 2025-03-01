@@ -15,7 +15,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/response_router")
+@app.post("/response_router")
 async def response_router(role: str, prompt: str):
     try:
         if llm_type == "openai":
