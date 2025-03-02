@@ -6,7 +6,7 @@ async def openai_response(role: str, prompt: str):
         client = AsyncOpenAI(api_key=OPENAI_API_KEY)
         
         response = await client.chat.completions.create(
-            model="gpt-3.5-turbo",  # Using a faster model
+            model="gpt-4o",  # Using a faster model
             messages=[
                 {"role": "system", "content": role},
                 {"role": "user", "content": prompt}
