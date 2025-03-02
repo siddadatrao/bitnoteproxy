@@ -67,7 +67,7 @@ async def response_router(request: PromptRequest) -> PromptResponse:
         # Create a task with timeout
         response_text = await asyncio.wait_for(
             openai_response(request.role, request.prompt),
-            timeout=30.0
+            timeout=60.0
         )
         
         return PromptResponse(response=response_text)
